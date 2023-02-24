@@ -16,6 +16,7 @@ public class Login extends  JDialog{
     private JLabel ImgIcono;
     private JLabel LEmpresa;
     private JLabel LAstronauta;
+    public static String dato;
 
     public  Login (JFrame parent) {
         super(parent);
@@ -30,6 +31,7 @@ public class Login extends  JDialog{
         ingresarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                dato =usuarioTF.getText();
                 if(perfilesCB.getSelectedItem().toString()=="ADMINISTRATIVO"){
                     String usuario = usuarioTF.getText();
                     String password = String.valueOf(passwordTF.getPassword());
@@ -83,6 +85,10 @@ public class Login extends  JDialog{
 
             }
         });
+    }
+
+    public Login() {
+
     }
 
     public static void main (String[] args){
