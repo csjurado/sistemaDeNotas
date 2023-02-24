@@ -5,14 +5,17 @@ import java.awt.event.ActionListener;
 import java.sql.*;
 
 public class Login extends  JDialog{
-    private JLabel Usuario;
+    private JLabel LUsuario;
     private JTextField usuarioTF;
-    private JLabel Contraseña;
+    private JLabel JIniciarSecion;
+    private JLabel LContrasenia;
     private JPasswordField passwordTF;
     private JComboBox perfilesCB;
     private JButton ingresarButton;
-    private JButton cancelarButton;
     private JPanel panelLogin;
+    private JLabel ImgIcono;
+    private JLabel LEmpresa;
+    private JLabel LAstronauta;
 
     public  Login (JFrame parent) {
         super(parent);
@@ -49,9 +52,9 @@ public class Login extends  JDialog{
                 }
 
                 if(perfilesCB.getSelectedItem().toString()=="ESTUDIANTE"){
-                    String nombreEstudiante = usuarioTF.getText();
-                    String  apellidoEstudiante= String.valueOf(passwordTF.getPassword());
-                    estudiante = getAuthenticationEstudiante(nombreEstudiante ,apellidoEstudiante);
+                    String idEstudiante = usuarioTF.getText();
+                    String  passwordEstudiante= String.valueOf(passwordTF.getPassword());
+                    estudiante = getAuthenticationEstudiante(idEstudiante ,passwordEstudiante);
                     if(estudiante!= null){
 
                     JFrame estudiantePantalla = new JFrame("ESTUDIANTE");
@@ -61,7 +64,7 @@ public class Login extends  JDialog{
                         estudiantePantalla.pack();
                         estudiantePantalla. setMinimumSize(new Dimension(640,480));
                         estudiantePantalla.setVisible(true);
-                        JOptionPane.showMessageDialog(Login.this,"Usted se ha logrado logear bienvenido ");
+                        JOptionPane.showMessageDialog(Login.this,"Bienvenido "+estudiante.nombreEstudiante);
                         dispose();
                     }else {
                         JOptionPane.showMessageDialog(Login.this,"Email o Password incorrectos","ERROR",JOptionPane.ERROR_MESSAGE);
@@ -122,29 +125,27 @@ public class Login extends  JDialog{
     }
 
     public Estudiante estudiante;
-    private Estudiante getAuthenticationEstudiante(String nombreEstudiante,String apellidoEstudiante){
+    private Estudiante getAuthenticationEstudiante(String idEstudiante,String passwordEstudiante){
         Estudiante estudiante = null;
 
-        final String DB_URL="jdbc:mysql://localhost/notas?serverTimezone=UTC";
+        final String DB_URL="jdbc:mysql://localhost/sistemadenotas?serverTimezone=UTC";
         final String USERNAME= "root";
         final String PASSWORD= "";
         try{
             Connection conn = DriverManager.getConnection(DB_URL,USERNAME,PASSWORD);
             Statement stmt=conn.createStatement();
-            String sql="SELECT * FROM estudiantes WHERE nombre=? AND password=?";
+            String sql="SELECT * FROM estudiante WHERE idEstudiante=? AND password=?";
             PreparedStatement preparedStatement=conn.prepareStatement(sql);
-            preparedStatement.setString(1,nombreEstudiante);
-            preparedStatement.setString(2,apellidoEstudiante);
+            preparedStatement.setString(1,idEstudiante);
+            preparedStatement.setString(2,passwordEstudiante);
             System.out.println("Conexion ok ");
             ResultSet resultSet=preparedStatement.executeQuery();
             if(resultSet.next()){
                 estudiante= new Estudiante();
-                estudiante.nombreEstudiante=resultSet.getString("nombre");
-                estudiante.apellidoEstudiante=resultSet.getString("apellido");
+                estudiante.idEstudiante=resultSet.getString("idEstudiante");
+                estudiante.nombreEstudiante=resultSet.getString("Nombre");
+                estudiante.apellidoEstudiante=resultSet.getString("Apellido");
                 estudiante.emailEstudiante=resultSet.getString("email");
-                estudiante.phone=resultSet.getString("phone");
-                estudiante.nota1=resultSet.getString("nota1");
-                estudiante.nota2=resultSet.getString("nota2");
                 estudiante.passwordEstudiante=resultSet.getString("password");
             }
             stmt.close();
